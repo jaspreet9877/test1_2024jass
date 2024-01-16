@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Calculator</title>
+  <style>
+     .font-style {
+      font-family: 'Lucida Sans', 'Lucida Sans Regular',
+                   'Lucida Grande', 'Lucida Sans Unicode',
+                   Geneva, Verdana, sans-serif;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      color: #333; 
+    }
+
+    .container {
+      text-align: center;
+      margin: 20px;
+    }
+
+    h2 {
+      color: #008080; 
+    }
+    table {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular',
+                   'Lucida Grande', 'Lucida Sans Unicode',
+                    Geneva, Verdana, sans-serif;
+    }
+    input, button {
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: 'Lucida Sans', 'Lucida Sans Regular',
+                   'Lucida Grande', 'Lucida Sans Unicode',
+                    Geneva, Verdana, sans-serif;
+    }
+    .error {
+      color: red;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Grade Calculator</h2>
+
+    <button onclick="changeButtonColor()">Change Button Color</button>
+
+
+  <div align="center">
+    <h1>Grade Calculator</h1>
+    
+    <button onclick="addActivity()" id="addActivity">
+      Add Activity
+    </button>
+
+    <label for="activity">Activity</label>
+    <input type="text" id="activity" size="3">
+
+    <label for="weight">Weight</label>
+    <input type="text" id="Weight" size="3"><br>    
+
+    <button onclick="addGrade()" id="addGrade">
+      Add Grade
+    </button>
+
+    <label for="grade">Grade</label>
+    <input type="text" id="grade" size="3">
+
+    <label for="activityNo">Activity no</label>
+    <input type="text" id="activityNo" size="3"><br>        
+
+    <button onclick="deleteActivity()" id="deleteActivity">
+      Delete Activity
+    </button>
+
+    <div id="errorMessages"></div>
+
+    <table border="2" id="activityTable" style="width:70%">
+      <tbody>
+        <tr>
+          <th>No</th>
+          <th>Activity</th>
+          <th>Weight</th>
+          <th>Grade</th>
+        </tr>  
+        <tr>
+          <td>1</td>
+          <td>Lab1</td>
+          <td>10</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Lab2</td>
+          <td>20</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Test1</td>
+          <td>30</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Test2</td>
+          <td>40</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      function addActivity() {
+        var activity = document.getElementById('activity').value.trim();
+        var weight = document.getElementById('Weight').value.trim();
+
+        var errorMessages = document.getElementById('errorMessages');
+        errorMessages.innerHTML = '';
+
+        if (!activity) {
+          displayError('Activity name is rejected.');
+          return;
+        }
+
+        if (!weight || weight > 100 || weight < 1) {
+          displayError('Weight is rejected.');
+          return;
+        }
+
+        var table = document.getElementById('activityTable');
+        var row = table.insertRow(-1);
+
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+
+        cell1.textContent = table.rows.length - 1;
+        cell2.textContent = activity;
+        cell3.textContent = weight;
+        cell4.innerHTML = '';
+
+        document.getElementById('activity').value = '';
+        document.getElementById('Weight').value = '';
+      }
+
+      function addGradeForActivity(activityNo) {
+        var gradeForm = document.getElementById('gradeForm');
+        gradeForm.style.display = 'block';
+        gradeForm.dataset.activityNo = activityNo;
+      }
+
+      function addGrade() {
+        var activityNo = document.getElementById('activityNo').value.trim();
+        var grade = document.getElementById('grade').value.trim();
+
+        var table = document.getElementById('activityTable');
+        var row = table.rows[activityNo];
+
+        var errorMessages = document.getElementById('errorMessages');
+        errorMessages.innerHTML = '';
+
+        if (!grade || grade > 100 || grade < 0) {
+          displayError('Error Message: Grade is rejected.');
+          return;
+        }
+
+        if (!row) {
+          displayError('Error Message: Invalid Activity No.');
+          return;
+        }
+
+        row.cells[3].textContent = grade;
+        document.getElementById('gradeForm').style.display = 'none';
+
+        
+        document.getElementById('grade').value = '';
+        document.getElementById('activityNo').value = '';
+      }
+
+      function deleteActivity() {
+        var table = document.getElementById('activityTable');
+        if (table.rows.length > 1) {
+          table.deleteRow(-1);
+        } else {
+          displayError('Error Message: No more activities to remove.');
+        }
+      }
+
+      function displayError(message) {
+        var errorMessages = document.getElementById('errorMessages');
+        var errorMessageElement = document.createElement('p');
+        errorMessageElement.className = 'error';
+        errorMessageElement.textContent = message;
+        errorMessages.appendChild(errorMessageElement);
+      }
+
+      function changeButtonColor() {
+        var buttons = document.querySelectorAll('button');
+
+        
+        var randomColor = getRandomColor();
+
+        for (var i = 0; i < buttons.length; i++) {
+          buttons[i].style.backgroundColor = randomColor;
+        }
+      }
+
+      function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+    </script>
+  </div>
+
+</body>
+</html>
